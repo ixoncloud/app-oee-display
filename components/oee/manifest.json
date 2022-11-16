@@ -1,0 +1,99 @@
+{
+  "main": "ixon-se-oee.min.js",
+  "version": "1",
+  "sheetSettings": {
+    "defaultCols": 6,
+    "defaultRows": 6,
+    "minCols": 4,
+    "minRows": 5
+  },
+  "inputs": [
+    {
+      "key": "header",
+      "type": "Group",
+      "label": "Info",
+      "children": [
+        {
+          "key": "title",
+          "type": "String",
+          "label": "Title",
+          "placeholder": "Leave empty for no title"
+        },
+        {
+          "key": "subtitle",
+          "type": "String",
+          "label": "Subtitle",
+          "placeholder": "Leave empty for no subtitle"
+        }
+      ]
+    },
+    {
+      "key": "realizedProductionTimeSeconds",
+      "type": "Group",
+      "label": "Realized Production Time (Sec) -> Increase Formula -> SUM(Integer) -> Seconds Available",
+      "summary": {
+        "label": "Data Source"
+      },
+      "children": [
+        {
+          "key": "metric",
+          "type": "AggregatedMetric",
+          "label": "The metric",
+          "placeholder": "Enter the metric to display",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "setSpeed",
+      "type": "Group",
+      "label": "Set Speed (Bpm) -> Last Formula -> Mean(Integer) -> Average Set Speed",
+      "summary": {
+        "label": "Data Source"
+      },
+      "children": [
+        {
+          "key": "metric",
+          "type": "AggregatedMetric",
+          "label": "The metric",
+          "placeholder": "Enter the metric to display",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "realizedProductionAmount",
+      "type": "Group",
+      "label": "Realized Production Amount -> Increase Formula -> SUM(Integer) -> Realized Production Amount",
+      "summary": {
+        "label": "Data Source"
+      },
+      "children": [
+        {
+          "key": "metric",
+          "type": "AggregatedMetric",
+          "label": "The metric",
+          "placeholder": "Enter the metric to display",
+          "required": true
+        }
+      ]
+    },
+    {
+      "key": "rejectedProductionAmount",
+      "type": "Group",
+      "label": "Rejected Production Amount -> Increase Formula ->  SUM(Integer) -> Rejected Production Amount",
+      "summary": {
+        "label": "Data Source"
+      },
+      "children": [
+        {
+          "key": "metric",
+          "type": "AggregatedMetric",
+          "label": "The metric",
+          "placeholder": "Enter the metric to display",
+          "required": true
+        }
+      ]
+    }
+  ]
+}
