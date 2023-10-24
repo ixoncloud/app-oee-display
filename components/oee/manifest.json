@@ -2,10 +2,15 @@
   "main": "ixon-se-oee.min.js",
   "version": "1",
   "sheetSettings": {
-    "defaultCols": 6,
-    "defaultRows": 6,
-    "minCols": 4,
-    "minRows": 5
+    "minCols": 1,
+    "minRows": 1
+  },
+  "cardSettings": {
+    "minHeight": 100
+  },
+  "reportSettings": {
+    "minCols": 1,
+    "minRows": 1
   },
   "inputs": [
     {
@@ -28,70 +33,86 @@
       ]
     },
     {
-      "key": "realizedProductionTimeSeconds",
-      "type": "Group",
-      "label": "Realized Production Time (Sec) -> Increase Formula -> SUM(Integer) -> Seconds Available",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
-        {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
+      "key": "variables",
+      "label": "Variables",
+      "type": "List",
+      "itemType": {
+        "key": "variable",
+        "label": "Variable",
+        "type": "Group",
+        "summary": {
+          "label": "{{name}}: {{metric.formula}}"
+        },
+        "children": [
+          {
+            "key": "name",
+            "label": "Name",
+            "type": "String"
+          },
+          {
+            "key": "metric",
+            "label": "Metric",
+            "type": "AggregatedMetric",
+            "allowedTypes": ["int", "float"]
+          }
+        ]
+      }
     },
     {
-      "key": "setSpeed",
+      "key": "calculation",
       "type": "Group",
-      "label": "Set Speed (Bpm) -> Last Formula -> Mean(Integer) -> Average Set Speed",
-      "summary": {
-        "label": "Data Source"
-      },
+      "label": "Calculation",
       "children": [
         {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
-    },
-    {
-      "key": "realizedProductionAmount",
-      "type": "Group",
-      "label": "Realized Production Amount -> Increase Formula -> SUM(Integer) -> Realized Production Amount",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
+          "key": "availability",
+          "type": "Group",
+          "label": "Output (decimal representation)",
+          "summary": {
+            "label": "Availability"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Availability based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
+        },
         {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
-    },
-    {
-      "key": "rejectedProductionAmount",
-      "type": "Group",
-      "label": "Rejected Production Amount -> Increase Formula ->  SUM(Integer) -> Rejected Production Amount",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
+          "key": "performance",
+          "type": "Group",
+          "label": "Output (decimal representation)",
+          "summary": {
+            "label": "Performance"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Performance based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
+        },
         {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
+          "key": "quality",
+          "type": "Group",
+          "label": "Output",
+          "summary": {
+            "label": "Quality (decimal representation)"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Quality based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
         }
       ]
     }
