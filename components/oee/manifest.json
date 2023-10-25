@@ -1,37 +1,18 @@
 {
   "main": "ixon-se-oee.min.js",
-  "version": "1",
+  "version": "2",
   "sheetSettings": {
     "minCols": 1,
-    "minRows": 1
+    "minRows": 2
   },
   "cardSettings": {
     "minHeight": 100
   },
   "reportSettings": {
     "minCols": 1,
-    "minRows": 1
+    "minRows": 2
   },
   "inputs": [
-    {
-      "key": "header",
-      "type": "Group",
-      "label": "Info",
-      "children": [
-        {
-          "key": "title",
-          "type": "String",
-          "label": "Title",
-          "placeholder": "Leave empty for no title"
-        },
-        {
-          "key": "subtitle",
-          "type": "String",
-          "label": "Subtitle",
-          "placeholder": "Leave empty for no subtitle"
-        }
-      ]
-    },
     {
       "key": "variables",
       "label": "Variables",
@@ -102,7 +83,7 @@
           "type": "Group",
           "label": "Output",
           "summary": {
-            "label": "Quality (decimal representation)"
+            "label": "Quality"
           },
           "children": [
             {
@@ -115,6 +96,128 @@
           ]
         }
       ]
+    },
+    {
+      "key": "rules",
+      "type": "List",
+      "label": "Color rules",
+      "itemType": {
+        "key": "rule",
+        "label": "Color rule",
+        "type": "Group",
+        "summary": {
+          "label": "{{operator}} {{value}} ({{colorUsage}})",
+          "colorField": "color"
+        },
+        "children": [
+          {
+            "key": "color",
+            "label": "Color",
+            "required": true,
+            "defaultValue": "#000000",
+            "type": "Color"
+          },
+          {
+            "key": "colorUsage",
+            "label": "Threshold color usage",
+            "type": "Selection",
+            "required": true,
+            "options": [
+              {
+                "value": "availability",
+                "label": "Use for Availability"
+              },
+              {
+                "value": "performance",
+                "label": "Use for Performance"
+              },
+              {
+                "value": "quality",
+                "label": "Use for Quality"
+              },
+              {
+                "value": "oee",
+                "label": "Use for OEE"
+              }
+            ]
+          },
+          {
+            "key": "operator",
+            "label": "Operator",
+            "required": true,
+            "type": "Selection",
+            "options": [
+              {
+                "value": "eq",
+                "label": "Equal to (=)"
+              },
+              {
+                "value": "ne",
+                "label": "Not equal to (≠)"
+              },
+              {
+                "value": "lt",
+                "label": "Less than (<)"
+              },
+              {
+                "value": "le",
+                "label": "Less than or equal (≤)"
+              },
+              {
+                "value": "gt",
+                "label": "Greater than (>)"
+              },
+              {
+                "value": "ge",
+                "label": "Greater than or equal (≥)"
+              }
+            ]
+          },
+          {
+            "key": "value",
+            "label": "Value",
+            "required": true,
+            "type": "String"
+          }
+        ]
+      }
+    },
+    {
+      "key": "displayOptions",
+      "type": "Group",
+      "label": "Display Options",
+      "children": [
+        {
+          "key": "hideAvailability",
+          "type": "Checkbox",
+          "label": "Hide Availability",
+          "defaultValue": false
+        },
+        {
+          "key": "hidePerformance",
+          "type": "Checkbox",
+          "label": "Hide Performance",
+          "defaultValue": false
+        },
+        {
+          "key": "hideQuality",
+          "type": "Checkbox",
+          "label": "Hide Quality",
+          "defaultValue": false
+        },
+        {
+          "key": "hideOee",
+          "type": "Checkbox",
+          "label": "Hide Oee",
+          "defaultValue": false
+        }
+      ]
+    },
+    {
+      "key": "debugMode",
+      "type": "Checkbox",
+      "label": "Debug Mode",
+      "defaultValue": false
     }
   ]
 }

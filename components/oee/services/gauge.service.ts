@@ -1,23 +1,23 @@
 import * as echarts from "echarts/core";
 import { GaugeChart } from "echarts/charts";
 import { CanvasRenderer } from "echarts/renderers";
+import { mapValueToRule } from "../utils/rules";
 
 echarts.use([GaugeChart, CanvasRenderer]);
 
 export class GaugeService {
   private isNarrow = false;
   private isMedium = false;
+  private isShallow = false;
   private value = 0;
   private myChart: any;
   private label: string;
   private option;
   private redrawTimeout?: number;
-  constructor(private chartEl: HTMLDivElement, label: string) {
+  private rules;
+  private color?: string;
+  constructor(private chartEl: HTMLDivElement, label: string, rules: any) {
     this.option = {
-      tooltip: {
-        formatter: "{b} : {c}%",
-        confine: true,
-      },
       textStyle: {
         fontFamily: "Roboto, Helvetica Neue, sans-serif",
       },
@@ -25,14 +25,18 @@ export class GaugeService {
     this.myChart = echarts.init(this.chartEl);
     this.myChart.setOption(this.option);
     this.label = label;
+    this.rules = rules;
   }
   public setValue(value: number) {
     this.value = value;
+    this.color = mapValueToRule(value, this.rules)?.rule?.color;
     this.draw();
   }
-  public resize(isNarrow: boolean, isMedium: boolean) {
+  public resize(isNarrow: boolean, isMedium: boolean, isShallow: boolean) {
     this.isNarrow = isNarrow;
+    this.isShallow = isShallow;
     this.isMedium = isMedium;
+
     if (this.myChart) {
       this.myChart.resize();
       if (this.redrawTimeout) {
@@ -54,35 +58,32 @@ export class GaugeService {
           progress: {
             show: true,
           },
+          color: this.color,
           detail: {
             valueAnimation: true,
             formatter: "{value}%",
-            fontSize: this.isNarrow ? 12 : 16,
-            offsetCenter: [
-              "0%",
-              this.isNarrow ? "160%" : this.isMedium ? "130%" : "40%",
-            ],
+            fontSize: this.isNarrow ? 10 : 16,
+            offsetCenter: ["0%", "40%"],
+            color: "inherit",
           },
           data: [
             {
               value: this.value,
               name: this.label,
               title: {
-                offsetCenter: [
-                  "0%",
-                  this.isNarrow ? "120%" : this.isMedium ? "100%" : "20%",
-                ],
+                offsetCenter: ["0%", "90%"],
               },
             },
           ],
           splitLine: {
-            show: !this.isNarrow,
+            show: !this.isNarrow && !this.isShallow,
           },
           axisTick: {
-            show: !this.isNarrow,
+            show: !this.isNarrow && !this.isShallow,
           },
           axisLabel: {
-            show: !this.isNarrow,
+            show: !this.isNarrow && !this.isMedium && !this.isShallow,
+            color: "inherit",
           },
           title: {
             fontSize: this.isNarrow ? 12 : 16,
