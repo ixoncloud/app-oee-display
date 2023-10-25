@@ -1,6 +1,6 @@
 {
   "main": "ixon-se-oee.min.js",
-  "version": "4",
+  "version": "5",
   "sheetSettings": {
     "minCols": 1,
     "minRows": 2
@@ -47,7 +47,7 @@
         {
           "key": "availability",
           "type": "Group",
-          "label": "Output (decimal representation)",
+          "label": "Availability (decimal representation)",
           "summary": {
             "label": "Availability"
           },
@@ -64,7 +64,7 @@
         {
           "key": "performance",
           "type": "Group",
-          "label": "Output (decimal representation)",
+          "label": "Performance (decimal representation)",
           "summary": {
             "label": "Performance"
           },
@@ -81,7 +81,7 @@
         {
           "key": "quality",
           "type": "Group",
-          "label": "Output",
+          "label": "Quality (decimal representation)",
           "summary": {
             "label": "Quality"
           },
