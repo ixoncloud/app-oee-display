@@ -241,26 +241,28 @@
       {}
     );
 
-    availability =
-      _doCalculation(
-        variableKeyValues,
-        context.inputs.calculation?.availability?.formula
-      ) || 1;
+    availability = _doCalculation(
+      variableKeyValues,
+      context.inputs.calculation?.availability?.formula
+    );
 
-    performance =
-      _doCalculation(
-        variableKeyValues,
-        context.inputs.calculation?.performance?.formula
-      ) || 1;
+    performance = _doCalculation(
+      variableKeyValues,
+      context.inputs.calculation?.performance?.formula
+    );
 
-    quality =
-      _doCalculation(
-        variableKeyValues,
-        context.inputs.calculation?.quality?.formula
-      ) || 1;
+    quality = _doCalculation(
+      variableKeyValues,
+      context.inputs.calculation?.quality?.formula
+    );
 
     if (availability > 1 || performance > 1 || quality > 1) {
       error = "only works with decimal calculation results where 1 is 100%";
+      return;
+    }
+
+    if (availability < 0 || performance < 0 || quality < 0) {
+      error = "only works with positive calculation results";
       return;
     }
 
@@ -275,6 +277,9 @@
   }
 
   function _doCalculation(variableKeyValues, formula) {
+    if (!formula) {
+      formula = "1";
+    }
     try {
       const calculatedValue = Parser.evaluate(formula, variableKeyValues);
       return calculatedValue;
@@ -303,7 +308,7 @@
           quality: {context.inputs.calculation?.quality?.formula} = {quality}
         </p>
         <p>
-          oee: {context.inputs.calculation?.oee?.formula} = {oee}
+          oee = {oee}
         </p>
         <p>variables:</p>
         {#each Object.entries(variableKeyValues) as [k, v]}
