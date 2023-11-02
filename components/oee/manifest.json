@@ -1,99 +1,223 @@
 {
   "main": "ixon-se-oee.min.js",
-  "version": "1",
+  "version": "5",
   "sheetSettings": {
-    "defaultCols": 6,
-    "defaultRows": 6,
-    "minCols": 4,
-    "minRows": 5
+    "minCols": 1,
+    "minRows": 2
+  },
+  "cardSettings": {
+    "minHeight": 100
+  },
+  "reportSettings": {
+    "minCols": 1,
+    "minRows": 2
   },
   "inputs": [
     {
-      "key": "header",
+      "key": "variables",
+      "label": "Variables",
+      "type": "List",
+      "itemType": {
+        "key": "variable",
+        "label": "Variable",
+        "type": "Group",
+        "summary": {
+          "label": "{{name}}: {{metric.formula}}"
+        },
+        "children": [
+          {
+            "key": "name",
+            "label": "Name",
+            "type": "String"
+          },
+          {
+            "key": "metric",
+            "label": "Metric",
+            "type": "AggregatedMetric",
+            "allowedTypes": ["int", "float"]
+          }
+        ]
+      }
+    },
+    {
+      "key": "calculation",
       "type": "Group",
-      "label": "Info",
+      "label": "Calculation",
       "children": [
         {
-          "key": "title",
-          "type": "String",
-          "label": "Title",
-          "placeholder": "Leave empty for no title"
+          "key": "availability",
+          "type": "Group",
+          "label": "Availability (decimal representation)",
+          "summary": {
+            "label": "Availability"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Availability based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
         },
         {
-          "key": "subtitle",
-          "type": "String",
-          "label": "Subtitle",
-          "placeholder": "Leave empty for no subtitle"
+          "key": "performance",
+          "type": "Group",
+          "label": "Performance (decimal representation)",
+          "summary": {
+            "label": "Performance"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Performance based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
+        },
+        {
+          "key": "quality",
+          "type": "Group",
+          "label": "Quality (decimal representation)",
+          "summary": {
+            "label": "Quality"
+          },
+          "children": [
+            {
+              "key": "formula",
+              "type": "String",
+              "label": "Formula",
+              "placeholder": "x / y * 100",
+              "description": "You can use various math operators like: *, /, +, -, ^, tan, sin, cos, log, etc. The full list of possible operators can be found here: https://www.npmjs.com/package/expr-eval#expression-syntax. Use this to calculate the Quality based on the various input variables. Leave empty to skip. Must be in decimal representation"
+            }
+          ]
         }
       ]
     },
     {
-      "key": "realizedProductionTimeSeconds",
+      "key": "rules",
+      "type": "List",
+      "label": "Color rules",
+      "itemType": {
+        "key": "rule",
+        "label": "Color rule",
+        "type": "Group",
+        "summary": {
+          "label": "{{operator}} {{value}} ({{colorUsage}})",
+          "colorField": "color"
+        },
+        "children": [
+          {
+            "key": "color",
+            "label": "Color",
+            "required": true,
+            "defaultValue": "#000000",
+            "type": "Color"
+          },
+          {
+            "key": "colorUsage",
+            "label": "Threshold color usage",
+            "type": "Selection",
+            "required": true,
+            "options": [
+              {
+                "value": "availability",
+                "label": "Use for Availability"
+              },
+              {
+                "value": "performance",
+                "label": "Use for Performance"
+              },
+              {
+                "value": "quality",
+                "label": "Use for Quality"
+              },
+              {
+                "value": "oee",
+                "label": "Use for OEE"
+              }
+            ]
+          },
+          {
+            "key": "operator",
+            "label": "Operator",
+            "required": true,
+            "type": "Selection",
+            "options": [
+              {
+                "value": "eq",
+                "label": "Equal to (=)"
+              },
+              {
+                "value": "ne",
+                "label": "Not equal to (≠)"
+              },
+              {
+                "value": "lt",
+                "label": "Less than (<)"
+              },
+              {
+                "value": "le",
+                "label": "Less than or equal (≤)"
+              },
+              {
+                "value": "gt",
+                "label": "Greater than (>)"
+              },
+              {
+                "value": "ge",
+                "label": "Greater than or equal (≥)"
+              }
+            ]
+          },
+          {
+            "key": "value",
+            "label": "Value",
+            "required": true,
+            "type": "String"
+          }
+        ]
+      }
+    },
+    {
+      "key": "displayOptions",
       "type": "Group",
-      "label": "Realized Production Time (Sec) -> Increase Formula -> SUM(Integer) -> Seconds Available",
-      "summary": {
-        "label": "Data Source"
-      },
+      "label": "Display Options",
       "children": [
         {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
+          "key": "hideAvailability",
+          "type": "Checkbox",
+          "label": "Hide Availability",
+          "defaultValue": false
+        },
+        {
+          "key": "hidePerformance",
+          "type": "Checkbox",
+          "label": "Hide Performance",
+          "defaultValue": false
+        },
+        {
+          "key": "hideQuality",
+          "type": "Checkbox",
+          "label": "Hide Quality",
+          "defaultValue": false
+        },
+        {
+          "key": "hideOee",
+          "type": "Checkbox",
+          "label": "Hide Oee",
+          "defaultValue": false
         }
       ]
     },
     {
-      "key": "setSpeed",
-      "type": "Group",
-      "label": "Set Speed (Bpm) -> Last Formula -> Mean(Integer) -> Average Set Speed",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
-        {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
-    },
-    {
-      "key": "realizedProductionAmount",
-      "type": "Group",
-      "label": "Realized Production Amount -> Increase Formula -> SUM(Integer) -> Realized Production Amount",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
-        {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
-    },
-    {
-      "key": "rejectedProductionAmount",
-      "type": "Group",
-      "label": "Rejected Production Amount -> Increase Formula ->  SUM(Integer) -> Rejected Production Amount",
-      "summary": {
-        "label": "Data Source"
-      },
-      "children": [
-        {
-          "key": "metric",
-          "type": "AggregatedMetric",
-          "label": "The metric",
-          "placeholder": "Enter the metric to display",
-          "required": true
-        }
-      ]
+      "key": "debugMode",
+      "type": "Checkbox",
+      "label": "Debug Mode",
+      "defaultValue": false
     }
   ]
 }
