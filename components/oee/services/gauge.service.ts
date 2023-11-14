@@ -13,7 +13,7 @@ export class GaugeService {
   private myChart: any;
   private label: string;
   private option;
-  private redrawTimeout?: number;
+  private redrawTimeout?: NodeJS.Timeout;
   private rules;
   private color?: string;
   constructor(private chartEl: HTMLDivElement, label: string, rules: any) {

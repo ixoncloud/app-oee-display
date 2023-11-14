@@ -1,43 +1,42 @@
-function ruleToPredicate(
-  rule: {
-    operator: string;
-    value: string;
-    color: string;
-    colorUsage: string;
-  },
-  value: number | string
-) {
+export type Rule = {
+  operator: string;
+  value: string;
+  color: string;
+  colorUsage: string;
+};
+
+function ruleToPredicate(rule: Rule, value: number | string) {
   const threshold = rule.value;
   const type = typeof value;
-  if (type !== 'string') {
+  if (type !== "string") {
     switch (rule.operator) {
-      case 'eq':
+      case "eq":
         return Number(value) === Number(threshold);
-      case 'ne':
+      case "ne":
         return Number(value) !== Number(threshold);
-      case 'lt':
+      case "lt":
         return Number(value) < Number(threshold);
-      case 'le':
+      case "le":
         return Number(value) <= Number(threshold);
-      case 'gt':
+      case "gt":
         return Number(value) > Number(threshold);
-      case 'ge':
+      case "ge":
         return Number(value) >= Number(threshold);
     }
   } else {
     const comparison = String(value).localeCompare(String(threshold));
     switch (rule.operator) {
-      case 'eq':
+      case "eq":
         return comparison === 0;
-      case 'ne':
+      case "ne":
         return comparison !== 0;
-      case 'lt':
+      case "lt":
         return comparison < 0;
-      case 'le':
+      case "le":
         return comparison <= 0;
-      case 'gt':
+      case "gt":
         return comparison > 0;
-      case 'ge':
+      case "ge":
         return comparison >= 0;
     }
   }
@@ -46,12 +45,7 @@ function ruleToPredicate(
 export function mapValueToRule(
   value: number | string,
   rules: {
-    rule: {
-      operator: string;
-      value: string;
-      color: string;
-      colorUsage: string;
-    };
+    rule: Rule;
   }[]
 ) {
   return rules?.find((item) => ruleToPredicate(item.rule, value));
@@ -60,12 +54,7 @@ export function mapValueToRule(
 export function mapValueToRuleIndex(
   value: number | string,
   rules: {
-    rule: {
-      operator: string;
-      value: string;
-      color: string;
-      colorUsage: string;
-    };
+    rule: Rule;
   }[]
 ) {
   return rules?.findIndex((item) => ruleToPredicate(item.rule, value));
