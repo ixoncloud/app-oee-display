@@ -33,7 +33,6 @@
   "dependencies": {
     "echarts": "^5.3.1",
     "expr-eval": "^2.0.2",
-    "lodash-es": "^4.17.21",
-    "ts-results": "^3.3.0"
+    "lodash-es": "^4.17.21"
   }
 }

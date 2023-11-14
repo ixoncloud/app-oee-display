@@ -1,6 +1,6 @@
 {
   "main": "ixon-se-oee.min.js",
-  "version": "5",
+  "version": "8",
   "sheetSettings": {
     "minCols": 1,
     "minRows": 2
@@ -13,6 +13,25 @@
     "minRows": 2
   },
   "inputs": [
+    {
+      "key": "header",
+      "type": "Group",
+      "label": "Info",
+      "children": [
+        {
+          "key": "title",
+          "type": "String",
+          "label": "Title",
+          "placeholder": "Leave empty for no title"
+        },
+        {
+          "key": "subtitle",
+          "type": "String",
+          "label": "Subtitle",
+          "placeholder": "Leave empty for no subtitle"
+        }
+      ]
+    },
     {
       "key": "variables",
       "label": "Variables",

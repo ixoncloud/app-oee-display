@@ -6,11 +6,11 @@
   import type {
     ComponentContext,
     LoggingDataClient,
-    LoggingDataTimeRange,
     LoggingDataMetric,
     ComponentContextAggregatedMetricInput,
   } from "@ixon-cdk/types";
-  import type { StaticInterval } from "./types";
+
+  import type { Rule } from "./utils/rules";
 
   type Variable = {
     name: string;
@@ -18,33 +18,21 @@
   };
 
   import { GaugeService } from "./services/gauge.service";
-
   import { runResizeObserver } from "./utils/responsiveness";
-
   import { formatPercentage } from "./utils/formatting";
-
   import { mapMetricInputToQuery } from "./utils/query";
 
-  import { max, indexOf, meanBy } from "lodash-es";
-
-  import {
-    getOptimalInterval,
-    getOptimalQueryTimerange,
-  } from "./utils/timerange";
-
   export let context: ComponentContext;
+
   let loggingDataClient: LoggingDataClient;
-
+  let header: { title: string; subtitle: string };
   let error = "";
-
   let rootEl: HTMLDivElement;
-
-  let interval: StaticInterval;
-  let cancelQuery: (() => void) | undefined;
-  let availability;
-  let performance;
-  let quality;
-  let oee;
+  let cancelQuery: (() => void) | void | undefined;
+  let availability: number | undefined;
+  let performance: number | undefined;
+  let quality: number | undefined;
+  let oee: number | undefined;
 
   let aGaugeChartEl: HTMLDivElement;
   let pGaugeChartEl: HTMLDivElement;
@@ -62,7 +50,10 @@
   let hideOee = false;
 
   let debugMode = false;
-  let variableKeyValues;
+
+  type VariableKeyValues = { [key: string]: number };
+
+  let variableKeyValues: VariableKeyValues = {};
 
   let contentWidth = 0;
   let contentHeight = 0;
@@ -77,7 +68,7 @@
 
     if (!context) return;
 
-    const rules = context?.inputs?.rules || [];
+    const rules: { rule: Rule }[] = context?.inputs?.rules || [];
 
     const availabilityRules = rules.filter(
       (x) => x.rule.colorUsage === "availability"
@@ -111,6 +102,7 @@
   }
 
   onMount(() => {
+    header = context ? context.inputs.header : undefined;
     debugMode = context?.inputs?.debugMode || false;
     hideAvailability =
       context?.inputs?.displayOptions?.hideAvailability || false;
@@ -178,40 +170,6 @@
     cancelQuery = loggingDataClient.query(queries, _processResponse);
   }
 
-  function _getVariables() {
-    const variables = context.inputs.variables;
-
-    const variableNames = variables.map(
-      (x: { variable: Variable }) => x?.variable?.name
-    );
-    const hasDuplicates = (variableNames: string[]) =>
-      variableNames.length !== new Set(variableNames).size;
-
-    if (hasDuplicates(variableNames)) {
-      error = "Please use unique variable names";
-      return;
-    }
-
-    return variables;
-  }
-
-  function _getVariableNames() {
-    const variables = context.inputs.variables;
-
-    const variableNames = variables.map(
-      (x: { variable: Variable }) => x?.variable?.name
-    );
-    const hasDuplicates = (variableNames: string[]) =>
-      variableNames.length !== new Set(variableNames).size;
-
-    if (hasDuplicates(variableNames)) {
-      error = "Please use unique variable names";
-      return;
-    }
-
-    return variableNames;
-  }
-
   function _processResponse(metrics: LoggingDataMetric[][]) {
     const variableValues = metrics.map((x) => {
       const value = x[0]?.value?.getValue();
@@ -256,6 +214,14 @@
       context.inputs.calculation?.quality?.formula
     );
 
+    if (
+      availability === undefined ||
+      performance === undefined ||
+      quality === undefined
+    ) {
+      return;
+    }
+
     if (availability > 1 || performance > 1 || quality > 1) {
       error = "only works with decimal calculation results where 1 is 100%";
       return;
@@ -276,7 +242,44 @@
     }
   }
 
-  function _doCalculation(variableKeyValues, formula) {
+  function _getVariables() {
+    const variables = context.inputs.variables;
+
+    const variableNames = variables.map(
+      (x: { variable: Variable }) => x?.variable?.name
+    );
+    const hasDuplicates = (variableNames: string[]) =>
+      variableNames.length !== new Set(variableNames).size;
+
+    if (hasDuplicates(variableNames)) {
+      error = "Please use unique variable names";
+      return;
+    }
+
+    return variables;
+  }
+
+  function _getVariableNames() {
+    const variables = context.inputs.variables;
+
+    const variableNames = variables.map(
+      (x: { variable: Variable }) => x?.variable?.name
+    );
+    const hasDuplicates = (variableNames: string[]) =>
+      variableNames.length !== new Set(variableNames).size;
+
+    if (hasDuplicates(variableNames)) {
+      error = "Please use unique variable names";
+      return;
+    }
+
+    return variableNames;
+  }
+
+  function _doCalculation(
+    variableKeyValues: VariableKeyValues,
+    formula?: string
+  ) {
     if (!formula) {
       formula = "1";
     }
@@ -291,6 +294,16 @@
 </script>
 
 <div class="card" bind:this={rootEl}>
+  {#if header && (header.title || header.subtitle)}
+    <div class="card-header">
+      {#if header.title}
+        <h3 class="card-title">{header.title}</h3>
+      {/if}
+      {#if header.subtitle}
+        <h4 class="card-subtitle">{header.subtitle}</h4>
+      {/if}
+    </div>
+  {/if}
   <div
     class="card-content"
     bind:clientWidth={contentWidth}
@@ -346,7 +359,6 @@
 </div>
 
 <style lang="scss">
-  $heading-color: #000000;
   @import "./styles/card";
 
   .card-content {
