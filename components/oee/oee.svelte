@@ -35,6 +35,8 @@
   export let context: ComponentContext;
   let loggingDataClient: LoggingDataClient;
 
+  let header: { title: string; subtitle: string };
+
   let error = "";
 
   let rootEl: HTMLDivElement;
@@ -111,6 +113,7 @@
   }
 
   onMount(() => {
+    header = context ? context.inputs.header : undefined;
     debugMode = context?.inputs?.debugMode || false;
     hideAvailability =
       context?.inputs?.displayOptions?.hideAvailability || false;
@@ -291,6 +294,16 @@
 </script>
 
 <div class="card" bind:this={rootEl}>
+  {#if header && (header.title || header.subtitle)}
+    <div class="card-header">
+      {#if header.title}
+        <h3 class="card-title">{header.title}</h3>
+      {/if}
+      {#if header.subtitle}
+        <h4 class="card-subtitle">{header.subtitle}</h4>
+      {/if}
+    </div>
+  {/if}
   <div
     class="card-content"
     bind:clientWidth={contentWidth}
